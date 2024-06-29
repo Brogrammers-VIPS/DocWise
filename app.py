@@ -97,7 +97,7 @@ def image_recognition():
          image_path='temp.jpg'
           
 
-         disease=request.form['disease']
+         disease=request.form['model']
          if disease =='lungs':
              pred1=preprocess_and_predict(image_path,Pneumonia)
          elif disease == 'skin':
