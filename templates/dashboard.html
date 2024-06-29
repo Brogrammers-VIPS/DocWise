@@ -39,8 +39,9 @@
             <div class="upload-container">
                 <section class="image-upload">
                     <h3>Upload Eye Disease Image</h3>
-                    <form id="uploadForm1">
-                        <input type="file" id="fileInput1" accept="image/*">
+                    <form id="uploadForm1" enctype="multipart/form-data">
+                        <label for="fileInput1">Choose Image:</label>
+                        <input type="file" id="fileInput1" accept="image/*" required>
                         <button type="submit">Upload</button>
                     </form>
                 </section>
@@ -72,7 +73,48 @@
                     <!-- Result content goes here -->
                 </div>
             </div>
-            
+            <script>
+                document.getElementById('uploadForm1').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    
+                    const fileInput = document.getElementById('fileInput1');
+                    
+                    const formData = new FormData();
+                    formData.append('image', fileInput.files[0]);
+                    formData.append('model',"eye")
+                    
+                    fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log('Success:', result);
+                        
+                        // Create a new result container
+                        const resultContainer = document.createElement('div');
+                        resultContainer.className = 'result-container';
+        
+                        const resultHeader = document.createElement('div');
+                        resultHeader.className = 'result-header';
+                        resultHeader.textContent = 'Prediction Result:';
+        
+                        const resultContent = document.createElement('div');
+                        resultContent.className = 'result-content';
+                        resultContent.textContent = result;
+        
+                        resultContainer.appendChild(resultHeader);
+                        resultContainer.appendChild(resultContent);
+        
+                        // Append the result container to the results-content div
+                        document.getElementById('results-content').appendChild(resultContainer);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error occurred while uploading image.');
+                    });
+                });
+            </script>
 
             <div id="slideshow">
                 <div class="slide fade">
